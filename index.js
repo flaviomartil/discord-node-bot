@@ -20,16 +20,59 @@ client.on("ready", async () => {
 });
 
 client.on("interactionCreate", (interaction) => {
+  if (interaction.isModalSubmit()) {
+    if (interaction.customId && interaction.customId.startsWith("suggestion-modal-")) {
+      const userId = interaction.user.id;
+      const userMention = interaction.user.toString();
+      const filter = interaction.customId === `suggestion-modal-${userId}`;
+
+      try {
+        if (filter) {
+          const cityNameValue = interaction.fields.getTextInputValue('cityName');
+          const suggestionValue = interaction.fields.getTextInputValue('suggestion');
+          const embed = createEmbed('Nova sugestão!', `Nome na cidade: ${cityNameValue}\nSugestão: ${suggestionValue}`, userMention);
+          sendMessageToChannels(embed, ['997122698905919579', '800849352112734230'], '1194621112764604466');
+          interaction.reply({
+            ephemeral: true,
+            content: `Sua sugestão foi enviada com sucesso, caso seja adicionada te avisaremos.`,
+          });
+        }
+
+      } catch (err) {
+        console.log('Error', err);
+      }
+    } else if (interaction.customId && interaction.customId.startsWith("requestSetModal-")) {
+      const userId = interaction.user.id;
+      const userMention = interaction.user.toString();
+      const filter = interaction.customId === `requestSetModal-${userId}`;
+      try {
+        if (filter) {
+          const cityNameValue = interaction.fields.getTextInputValue('cityName');
+          const passportValue = interaction.fields.getTextInputValue('passport');
+          const cityPhoneValue = interaction.fields.getTextInputValue('cityPhone');
+          const recruiterNameValue = interaction.fields.getTextInputValue('recruiterName');
+          const embed = createEmbed('Pedindo set !', `Nome na cidade: ${cityNameValue}\nPassaporte: ${passportValue}\nTelefone na cidade: ${cityPhoneValue}\nNome do recrutador: ${recruiterNameValue}`, userMention);
+          sendMessageToChannels(embed, ['997122698905919579', '800849352112734230'], '1194613131763253319');
+
+          interaction.reply({
+            ephemeral: true,
+            content: `Pedido de set solicitado com sucesso, aguarde alguém da moderação responder.`,
+          });
+        }
+      } catch (err) {
+        console.log('Error', err);
+      }
+    }
+  }
+
   if (interaction.customId === "suggestion-modal") {
     makeModalSuggestion(interaction);
   } else if  (interaction.customId === "request-set-modal") {
     modalSet(interaction);
-  } else if (interaction.customId && interaction.customId.startsWith("suggestion-modal-")) {
-    submitModalSuggestion(interaction);
-  } else if (interaction.customId && interaction.customId.startsWith("requestSetModal-")) {
-    submitModalSet(interaction);
   }
 });
+
+
 
 function makeModalSuggestion(interaction) {
   const userId = interaction.user.id;
@@ -53,28 +96,8 @@ function makeModalSuggestion(interaction) {
   modal.addComponents(firstActionRow, secondActionRow);
 
   interaction.showModal(modal);
+  return;
 }
-
-async function submitModalSuggestion(interaction) {
-  const userId = interaction.user.id;
-  const userMention = interaction.user.toString();
-  const filter = (interaction) => interaction.customId === `suggestion-modal-${userId}`;
-
-  try {
-    const modalInteraction = await interaction.awaitModalSubmit({filter, time: 120_000});
-    const cityNameValue = modalInteraction.fields.getTextInputValue('cityName');
-    const suggestionValue = modalInteraction.fields.getTextInputValue('suggestion');
-    const embed = createEmbed('Nova sugestão!', `Nome na cidade: ${cityNameValue}\nSugestão: ${suggestionValue}`, userMention);
-    sendMessageToChannels(embed, ['997122698905919579', '800849352112734230'], '1194621112764604466');
-    modalInteraction.reply({
-      ephemeral: true,
-      content: `Sua sugestão foi enviada com sucesso, caso seja adicionada te avisaremos.`,
-    });
-  } catch (err) {
-    console.log('Error', err);
-  }
-}
-
 function modalSet(interaction) {
   const userId = interaction.user.id;
   const modal = new ModalBuilder()
@@ -109,30 +132,8 @@ function modalSet(interaction) {
   modal.addComponents(firstActionRow, secondActionRow, thirdActionRow, fourActionRow);
 
   interaction.showModal(modal);
+  return;
 }
-
-async function submitModalSet(interaction) {
-  const userId = interaction.user.id;
-  const userMention = interaction.user.toString();
-  const filter = (interaction) => interaction.customId === `requestSetModal-${userId}`;
-
-  try {
-    const modalInteraction = await interaction.awaitModalSubmit({filter, time: 120_000});
-    const cityNameValue = modalInteraction.fields.getTextInputValue('cityName');
-    const passportValue = modalInteraction.fields.getTextInputValue('passport');
-    const cityPhoneValue = modalInteraction.fields.getTextInputValue('cityPhone');
-    const recruiterNameValue = modalInteraction.fields.getTextInputValue('recruiterName');
-    const embed = createEmbed('Pedindo set !', `Nome na cidade: ${cityNameValue}\nPassaporte: ${passportValue}\nTelefone na cidade: ${cityPhoneValue}\nNome do recrutador: ${recruiterNameValue}`, userMention);
-    sendMessageToChannels(embed, ['997122698905919579', '800849352112734230'], '1194613131763253319');
-    modalInteraction.reply({
-      ephemeral: true,
-      content: `Pedido de set solicitado com sucesso, aguarde alguém da moderação responder.`,
-    });
-  } catch (err) {
-    console.log('Error', err);
-  }
-}
-
 function createEmbed(title, description, userMention) {
   let descriptionEmbed = `${description}`
   if (userMention) {
