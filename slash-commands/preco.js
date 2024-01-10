@@ -20,7 +20,11 @@ module.exports = {
                 { name: 'HK P7M10', value: '**Custo:** 123.000\n**Valor MÍNIMO:** 166.050\n**Valor MÁXIMO:** 184.500', inline: false }
             );
         interaction.reply('Listando ultimos preços de armas:');
-       interaction.channel.send({ embeds: [embed] });
+        if (interaction.channel) {
+            interaction.channel.send({ embeds: [embed] });
+        } else {
+            interaction.user.send({embeds: [embed]});
+        }
     }
 },
     data: {

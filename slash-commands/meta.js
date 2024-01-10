@@ -15,7 +15,11 @@ module.exports = {
                 { name: '✦𝗣𝗔𝗚𝗔𝗠𝗘𝗡𝗧𝗢✦', value: '𝗣𝗔𝗚𝗔𝗠𝗘𝗡𝗧𝗢 𝗦𝗘𝗠𝗔𝗡𝗔𝗟: 5 FIVES OU 500.000 DINHEIRO LIMPO', inline: false }
             );
         interaction.reply('Listando meta semanal:');
-        interaction.channel.send({ embeds: [embed] });
+        if (interaction.channel) {
+            interaction.channel.send({ embeds: [embed] });
+        } else {
+            interaction.user.send({embeds: [embed]});
+        }
     }
 },
     data: {

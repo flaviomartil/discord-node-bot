@@ -17,7 +17,11 @@ module.exports = {
             );
 
         interaction.reply('Listando parceiros:');
-        interaction.channel.send({ embeds: [embed] });
+        if (interaction.channel) {
+            interaction.channel.send({ embeds: [embed] });
+        } else {
+            interaction.user.send({embeds: [embed]});
+        }
     }
 },
     data: {

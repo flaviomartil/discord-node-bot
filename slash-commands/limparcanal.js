@@ -2,7 +2,13 @@ const {EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 module.exports = {
     run: async ({ interaction }) => {
-
+        if (!interaction.channel) {
+            interaction.reply({
+                ephemeral: true,
+                content: `Você não pode usar esse comando em mensagem privada.`,
+            });
+            return;
+        }
     if (!interaction.isChatInputCommand()) return;
     if (interaction.commandName === 'limparcanal') {
         const member = interaction.member;

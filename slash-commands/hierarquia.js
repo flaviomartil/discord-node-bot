@@ -24,7 +24,11 @@ module.exports = {
             { name: 'Gerente de Recrutamentos Cherry', value: '@『GER-REC』Cherry| 15988', inline: false }
         );
         interaction.reply('Listando nossa hierarquia:');
-        interaction.channel.send({ embeds: [embed] });
+        if (interaction.channel) {
+            interaction.channel.send({ embeds: [embed] });
+        } else {
+            interaction.user.send({embeds: [embed]});
+        }
     }
 },
     data: {

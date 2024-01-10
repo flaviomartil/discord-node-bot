@@ -2,7 +2,6 @@ const {EmbedBuilder} = require('discord.js');
 
 module.exports = {
     run: async ({ interaction }) => {
-
     if (!interaction.isChatInputCommand()) return;
 
     if (interaction.commandName === 'ajuda') {
@@ -18,7 +17,11 @@ module.exports = {
                 { name: 'Comando de Metas', value: '`/meta` - Apresenta a meta semanal atualizada', inline: false }
             );
         interaction.reply('Listando FAQ:');
+        if (interaction.channel) {
         interaction.channel.send({ embeds: [embed] });
+        } else {
+            interaction.user.send({embeds: [embed]});
+        }
     }
 },
     data: {

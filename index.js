@@ -1,5 +1,5 @@
 require('dotenv/config');
-const { Client, IntentsBitField, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Client, IntentsBitField, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActivityType } = require('discord.js');
 const { CommandHandler } = require('djs-commander');
 const path = require('path');
 
@@ -15,11 +15,16 @@ new CommandHandler({
 
 client.on("ready", async () => {
   console.log("The bot loaded successfully.");
+  client.user.setPresence({
+    activities: [{ name: `/Ajuda para comandos`, type: ActivityType.PLAYING }],
+    status: 'dnd',
+  });
   askSet();
   channelSuggestion();
 });
 
 client.on("interactionCreate", (interaction) => {
+
   if (interaction.isModalSubmit()) {
     if (interaction.customId && interaction.customId.startsWith("suggestion-modal-")) {
       const userId = interaction.user.id;
