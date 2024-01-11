@@ -1,6 +1,5 @@
 const {EmbedBuilder} = require('discord.js');
 const { database } = require('../config/firebaseConfig');
-
 module.exports = {
     run: async ({ interaction }) => {
 
@@ -16,13 +15,14 @@ module.exports = {
         }
 
         const embed = new EmbedBuilder()
-            .setTitle(`Rank Atual de ${message.author.username}`)
+            .setTitle(`Rank Atual de ${interaction.user.displayName.toString()}`)
             .setColor(0x00FF00)
-            .setDescription(`Aqui estão os detalhes do seu rank atual, ${message.author.username}:`)
+            .setDescription(`Aqui estão os detalhes do seu rank atual:`)
             .addFields(
-                { name: 'Nome', value: userRank.Rank, inline: true },
+                { name: 'Rank', value: `${userRank.Rank}`, inline: true },
             );
 
+        interaction.reply('Enviando Rank:');
         if (interaction.channel) {
             interaction.channel.send({ embeds: [embed] });
         } else {
