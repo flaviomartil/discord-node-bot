@@ -1,10 +1,11 @@
 require('dotenv/config');
 const { Client, IntentsBitField, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActivityType } = require('discord.js');
 const { CommandHandler } = require('djs-commander');
+const { logMessage, logCommand, logForms } = require('./events/log/logs');
 const path = require('path');
 
 const client = new Client({
-  intents: [IntentsBitField.Flags.Guilds],
+  intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages,IntentsBitField.Flags.MessageContent],
 });
 
 new CommandHandler({
@@ -23,7 +24,17 @@ client.on("ready", async () => {
   channelSuggestion();
 });
 
-client.on("interactionCreate", (interaction) => {
+client.on("messageCreate",  (message) => {
+  const interactionRoute = '/rankMessage/';
+  logMessage(message, interactionRoute);
+});
+
+client.on("interactionCreate",  (interaction) => {
+  if (interaction.isCommand()) {
+    const interactionRoute = '/interactions/';
+    logCommand(interaction, interactionRoute);
+  }
+
 
   if (interaction.isModalSubmit()) {
     if (interaction.customId && interaction.customId.startsWith("suggestion-modal-")) {
@@ -35,6 +46,11 @@ client.on("interactionCreate", (interaction) => {
         if (filter) {
           const cityNameValue = interaction.fields.getTextInputValue('cityName');
           const suggestionValue = interaction.fields.getTextInputValue('suggestion');
+          const objectLog = {
+            cityName: cityNameValue,
+            suggestion: suggestionValue
+          }
+          logForms('/askSuggestionBackup/',objectLog);
           const embed = createEmbed('Nova sugestão!', `Nome na cidade: ${cityNameValue}\nSugestão: ${suggestionValue}`, userMention);
           sendMessageToChannels(embed, ['997122698905919579', '800849352112734230'], '1194621112764604466');
           interaction.reply({
@@ -56,6 +72,14 @@ client.on("interactionCreate", (interaction) => {
           const passportValue = interaction.fields.getTextInputValue('passport');
           const cityPhoneValue = interaction.fields.getTextInputValue('cityPhone');
           const recruiterNameValue = interaction.fields.getTextInputValue('recruiterName');
+          const objectLog = {
+            CityName: cityNameValue,
+            Passport: passportValue,
+            cityPhoneValue: cityPhoneValue,
+            recruiterNameValue: recruiterNameValue,
+            userMention: userMention
+          }
+          logForms('/askSetBackup/',objectLog);
           const embed = createEmbed('Pedindo set !', `Nome na cidade: ${cityNameValue}\nPassaporte: ${passportValue}\nTelefone na cidade: ${cityPhoneValue}\nNome do recrutador: ${recruiterNameValue}`, userMention);
           sendMessageToChannels(embed, ['997122698905919579', '800849352112734230'], '1194613131763253319');
 
@@ -76,8 +100,6 @@ client.on("interactionCreate", (interaction) => {
     modalSet(interaction);
   }
 });
-
-
 
 function makeModalSuggestion(interaction) {
   const userId = interaction.user.id;

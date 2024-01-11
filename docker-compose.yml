@@ -1,6 +1,7 @@
 version: '3'
 services:
   web:
+    restart: unless-stopped
     image: node:20-alpine
     container_name: web-bot
     working_dir: /var/www/
