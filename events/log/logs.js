@@ -64,7 +64,7 @@ async function logMessage(message, route) {
             User_ID: id,
             MessageCount: newCount,
             Rank: playerRank,
-            Xp: xpLevel.xp
+            Xp: xpLevel.currentXP
         };
 
         if (userSnapshot.exists()) {

@@ -7,16 +7,16 @@ module.exports = {
         const rank = await getUserRankPositionByMessageCount(userId);
         const userData = await getUserRank(userId);
         const xpLevel = await calculateXPLevel(userData);
-        const progress = Math.floor((xpLevel.xp / xpLevel.proximoRankXp) * 100);
+        const progress = Math.floor((xpLevel.currentXP - xpLevel.initialXP) / (xpLevel.nextRankXP - xpLevel.initialXP) * 100);
         let avatar = interaction.user.avatarURL();
         const card = new RankCardBuilder()
             .setDisplayName(interaction.member.nickname)
             .setUsername(userData.Rank)
             .setAvatar(avatar)
-            .setCurrentXP(xpLevel.xp)
-            .setRequiredXP(xpLevel.proximoRankXp)
+            .setCurrentXP(xpLevel.currentXP)
+            .setRequiredXP(xpLevel.nextRankXP)
             .setProgressCalculator(() => {
-                return progress
+                return progress;
             })
             .setLevel(xpLevel.level)
             .setRank(rank)
@@ -30,11 +30,13 @@ module.exports = {
         });
         interaction.reply('Enviando Rank:');
         if (interaction.channel) {
-            interaction.channel.send({files: [{attachment: image}]});
+            interaction.channel.send({ files: [{ attachment: image }] });
         } else {
-            interaction.user.send({files: [{attachment: image}]});
+            interaction.user.send({ files: [{ attachment: image }] });
         }
     },
+
+
     data: {
         name: 'meurank',
         description: 'Mostra seu rank atual no servidor',
