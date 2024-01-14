@@ -1,37 +1,42 @@
-const {EmbedBuilder} = require('discord.js');
-const { database } = require('../config/firebaseConfig');
+const {Font,RankCardBuilder,RankCardUserStatus,BuiltInGraphemeProvider} = require('canvacord');
+const { calculateXPLevel, getUserRank,getUserRankPositionByMessageCount } = require('../events/level/xp');
 module.exports = {
     run: async ({ interaction }) => {
-
-    if (!interaction.isChatInputCommand()) return;
-    if (interaction.commandName === 'meurank') {
+        Font.loadDefault();
         const userId = interaction.user.id;
-        const userRankSnapshot = await database.ref(`rankMessage/${userId}`).once('value');
-        const userRank = userRankSnapshot.val();
+        const rank = await getUserRankPositionByMessageCount(userId);
+        const userData = await getUserRank(userId);
+        const xpLevel = await calculateXPLevel(userData);
+        const progress = Math.floor((xpLevel.xp / xpLevel.proximoRankXp) * 100);
+        let avatar = interaction.user.avatarURL();
+        const card = new RankCardBuilder()
+            .setDisplayName(interaction.member.nickname)
+            .setUsername(userData.Rank)
+            .setAvatar(avatar)
+            .setCurrentXP(xpLevel.xp)
+            .setRequiredXP(xpLevel.proximoRankXp)
+            .setProgressCalculator(() => {
+                return progress
+            })
+            .setLevel(xpLevel.level)
+            .setRank(rank)
+            .setOverlay(90)
+            .setBackground("https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg")
+            .setStatus(interaction.user.status)
+            .setGraphemeProvider(BuiltInGraphemeProvider.FluentEmojiFlat);
 
-        if (!userRank) {
-            interaction.reply("Parece que você ainda não tem um rank");
-            return;
-        }
-
-        const embed = new EmbedBuilder()
-            .setTitle(`Rank Atual de ${interaction.user.displayName.toString()}`)
-            .setColor(0x00FF00)
-            .setDescription(`Aqui estão os detalhes do seu rank atual:`)
-            .addFields(
-                { name: 'Rank', value: `${userRank.Rank}`, inline: true },
-            );
-
+        const image = await card.build({
+            format: "png",
+        });
         interaction.reply('Enviando Rank:');
         if (interaction.channel) {
-            interaction.channel.send({ embeds: [embed] });
+            interaction.channel.send({files: [{attachment: image}]});
         } else {
-            interaction.user.send({embeds: [embed]});
+            interaction.user.send({files: [{attachment: image}]});
         }
-    }
-},
+    },
     data: {
-    name: 'meurank',
-        description: 'Comando para ver o seu rank',
-},
+        name: 'meurank',
+        description: 'Mostra seu rank atual no servidor',
+    },
 };

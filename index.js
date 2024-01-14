@@ -1,4 +1,4 @@
-require('dotenv/config');
+require('dotenv').config();
 const { Client, IntentsBitField, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, ActivityType } = require('discord.js');
 const { CommandHandler } = require('djs-commander');
 const { logMessage, logCommand, logForms } = require('./events/log/logs');

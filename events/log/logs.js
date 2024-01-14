@@ -1,5 +1,6 @@
 const randomstring = require('randomstring');
 const { database } = require('../../config/firebaseConfig');
+const { calculateXPLevel, getUserRank } = require('../level/xp');
 async function getRanks() {
     try {
         const ranksRef = database.ref('/ranks');
@@ -14,15 +15,15 @@ async function initializeRanks() {
     try {
         const ranksRef = database.ref('/ranks');
         await ranksRef.set({
-            1: { name: 'Novato', messages: 0 },
-            2: { name: 'Recruta', messages: 10 },
-            3: { name: 'Prospecto', messages: 20 },
-            4: { name: 'Executor', messages: 50 },
-            5: { name: 'Capitão', messages: 100 },
-            6: { name: 'Tenente', messages: 200 },
-            7: { name: 'Sargento', messages: 300 },
-            8: { name: 'Vice-Presidente', messages: 500 },
-            9: { name: 'Presidente', messages: 1000 },
+            1: { name: 'Novato', messages: 0, xp: 0, level: 1 },
+            2: { name: 'Recruta', messages: 10, xp: 100, level: 2 },
+            3: { name: 'Prospecto', messages: 20, xp: 200, level: 3 },
+            4: { name: 'Executor', messages: 50, xp: 500, level: 4 },
+            5: { name: 'Capitão', messages: 100, xp: 1000, level: 5 },
+            6: { name: 'Tenente', messages: 200, xp: 2000, level: 6 },
+            7: { name: 'Sargento', messages: 300, xp: 3000, level: 7 },
+            8: { name: 'Vice-Presidente', messages: 500, xp: 5000, level: 8 },
+            9: { name: 'Presidente', messages: 1000, xp: 10000, level: 9 },
         });
     } catch (err) {
         console.log(err);
@@ -50,6 +51,8 @@ async function logMessage(message, route) {
         const oldRank = userSnapshot.exists() ? userSnapshot.val().Rank : null;
         const newCount = currentCount + 1;
         const playerRank = await updateRank(oldRank,newCount);
+        const userData = await getUserRank(id);
+        const xpLevel = await calculateXPLevel(userData);
 
         if (playerRank !== oldRank) {
             message.reply(`${message.author.username} está agora no rank: ${playerRank}`);
@@ -60,7 +63,8 @@ async function logMessage(message, route) {
             User: message.author.username,
             User_ID: id,
             MessageCount: newCount,
-            Rank: playerRank
+            Rank: playerRank,
+            Xp: xpLevel.xp
         };
 
         if (userSnapshot.exists()) {
@@ -92,9 +96,10 @@ async function logCommand(interaction, route) {
         const userSnapshot = await userRef.once('value');
         const currentCount = userSnapshot.val() ? userSnapshot.val().usages || 0 : 0;
         const newCount = currentCount + 1;
+        let userName = interaction.member.nickname;
 
         await database.ref(route + id +  '-' + command).set({
-            userName: interaction.user.displayName.toString(),
+            userName: userName,
             usages: newCount,
         });
     } catch (err) {

@@ -2,11 +2,13 @@ version: '3'
 services:
   web:
     restart: unless-stopped
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: web-bot
     working_dir: /var/www/
     volumes:
       - ./:/var/www/
     ports:
       - "8095:8080"
-    command: npm run dev
+

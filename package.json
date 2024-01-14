@@ -9,9 +9,10 @@
     },
     "dependencies": {
         "axios": "^1.6.5",
+        "canvacord": "^6.0.1",
         "discord.js": "^14.11.0",
         "djs-commander": "^0.0.45",
-        "dotenv": "^16.0.3"
+        "dotenv": "^16.3.1"
     },
     "devDependencies": {
         "firebase": "^8.6.2",
