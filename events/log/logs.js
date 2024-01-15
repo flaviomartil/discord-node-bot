@@ -1,7 +1,6 @@
 const randomstring = require('randomstring');
 const { database } = require('../../config/firebaseConfig');
-const { calculateXPLevel, getUserRank, getUserRankPositionByMessageCount} = require('../level/xp');
-const {Font, RankCardBuilder, BuiltInGraphemeProvider} = require("canvacord");
+const { calculateXPLevel, getUserRank} = require('../level/xp');
 async function getRanks() {
     try {
         const ranksRef = database.ref('/ranks');
@@ -57,7 +56,6 @@ async function logMessage(message, route) {
 
         if (playerRank !== oldRank) {
             message.reply(`${message.author.username} está agora no rank: ${playerRank}`);
-            sendCardRank(message);
         }
 
         const updateData = {
@@ -114,42 +112,5 @@ async function logCommand(interaction, route) {
     }
 }
 
-async function sendCardRank (message) {
-    Font.loadDefault();
-    const userId = message.author.id;
-    const rank = await getUserRankPositionByMessageCount(userId);
-    const userData = await getUserRank(userId);
-    const xpLevel = await calculateXPLevel(userData);
-    const progress = Math.floor((xpLevel.currentXP - xpLevel.initialXP) / (xpLevel.nextRankXP - xpLevel.initialXP) * 100);
-    let avatarURL = message.author.avatarURL();
-
-    let avatar = "https://cdn.discordapp.com/embed/avatars/0.png?size=256";
-
-    if (!avatarURL.endsWith(".gif")) {
-        avatar = avatarURL;
-    }
-
-    const card = new RankCardBuilder()
-        .setDisplayName(message.member.displayName)
-        .setUsername(userData.Rank)
-        .setAvatar(avatar)
-        .setCurrentXP(xpLevel.currentXP)
-        .setRequiredXP(xpLevel.nextRankXP)
-        .setProgressCalculator(() => {
-            return progress;
-        })
-        .setLevel(xpLevel.level)
-        .setRank(rank)
-        .setOverlay(90)
-        .setBackground("https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg")
-        .setStatus(message.member.status)
-        .setGraphemeProvider(BuiltInGraphemeProvider.FluentEmojiFlat);
-
-    const image = await card.build({
-        format: "png",
-    });
-
-        message.reply({files: [{ attachment: image }] });
-}
 
 module.exports = { logMessage, logCommand, logForms };
