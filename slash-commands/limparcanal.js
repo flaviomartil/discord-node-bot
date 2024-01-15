@@ -3,7 +3,6 @@ const {PermissionsBitField, SlashCommandBuilder} = require("discord.js");
 module.exports = {
     run: async ({ interaction }) => {
         const number = interaction.options.getNumber('numero');
-        console.log(interaction.message);
 
         if (interaction.channel) {
             let memberUsedCommand = interaction.member;
