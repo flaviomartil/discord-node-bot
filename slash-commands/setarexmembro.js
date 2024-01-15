@@ -13,8 +13,8 @@ module.exports = {
                 return interaction.reply('Você não pode usar esse comando.');
             }
 
-        member.roles.add("1196479865575178340");
-        member.roles.remove("1143271758896562239");
+        await member.roles.add("1196479865575178340");
+        await member.roles.remove("1143271758896562239");
 
         return interaction.reply(`${interaction.user} setou o membro ${user} como ex-membro romanov`)
         } else {
