@@ -15,10 +15,9 @@ module.exports = {
         const role = interaction.guild.roles.cache.find(role => role.id !== "1196479865575178340")
         const totalAway = role.members.map(m => m.user.toString())
         const members = totalAway.join('\n ');
-
         const maxLength = 1024;
-
         const parts = [];
+
         for (let i = 0; i < members.length; i += maxLength) {
           parts.push(members.substring(i, i + maxLength));
         }
@@ -35,7 +34,6 @@ module.exports = {
               .addFields({name: 'Membros:', value: part, inline: false}
               );
 
-          interaction.reply('Listando:');
           interaction.channel.send({embeds: [embed]});
         });
       } else {
