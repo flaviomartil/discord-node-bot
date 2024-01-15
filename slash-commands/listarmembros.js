@@ -13,29 +13,32 @@ module.exports = {
 
         const guild = await interaction.guild.members.fetch();
         const role = interaction.guild.roles.cache.find(role => role.id !== "1196479865575178340")
-        const totalAway = role.members.map(m => m.user.toString())
-        const members = totalAway.join('\n ');
-        const maxLength = 1024;
-        const parts = [];
+        const totalMember = role.members.map(m => m.user.toString())
+        const chunkSize = 30;
 
-        for (let i = 0; i < members.length; i += maxLength) {
-          parts.push(members.substring(i, i + maxLength));
+        const chunks = [];
+        for (let i = 0; i < totalMember.length; i += chunkSize) {
+          chunks.push(totalMember.slice(i, i + chunkSize));
         }
 
-        if (!members) {
+        if (!totalMember) {
           interaction.reply('Não temos membros no momento');
           return;
         }
 
-        parts.forEach((part, index) => {
+        await chunks.forEach((part, index) => {
+          let members = part.join('\n ');
           const embed = new EmbedBuilder()
               .setTitle('Listando todos os membros romanov')
               .setColor(0xFFD700)
-              .addFields({name: 'Membros:', value: part, inline: false}
+              .addFields({name: 'Membros:', value: members, inline: false}
               );
 
           interaction.channel.send({embeds: [embed]});
         });
+
+        interaction.reply('Essa é nossa lista atualizada');
+
       } else {
         interaction.reply('Esse comando só pode ser usado no servidor');
         return;
