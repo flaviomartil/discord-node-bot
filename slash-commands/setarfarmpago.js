@@ -7,7 +7,7 @@ module.exports = {
         if (interaction.channel) {
             const guild = await interaction.guild.members.fetch();
             const member = guild.find((m) => m.id === user.id);
-        if (!member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
+        if (!interaction.user.permissions.has(PermissionsBitField.Flags.KickMembers)) {
             return interaction.reply('Você não pode usar esse comando.');
         }
 
