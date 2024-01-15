@@ -12,7 +12,7 @@ module.exports = {
         }
 
         const guild = await interaction.guild.members.fetch();
-        const role = interaction.guild.roles.cache.find(role => role.id !== "1196479865575178340")
+        const role = interaction.guild.roles.cache.find(role => role.id !== "1196479865575178340" && role.id != "1143271758896562238")
         const totalMember = role.members.map(m => m.user.toString())
         const chunkSize = 30;
 
