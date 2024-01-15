@@ -23,9 +23,9 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-        .setTitle('Esses são os membros ausentes')
+        .setTitle('Membros ausentes')
         .setColor(0xFFD700)
-        .addFields({ name: 'Usuários ausentes', value: afkMembers, inline: false }
+        .addFields({ name: 'Membros:', value: afkMembers, inline: false }
         );
 
 
