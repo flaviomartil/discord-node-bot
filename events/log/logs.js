@@ -57,7 +57,41 @@ async function logMessage(message, route) {
 
         if (playerRank !== oldRank) {
             message.reply(`${message.author.username} está agora no rank: ${playerRank}`);
-            sendRankCommand(message);
+            Font.loadDefault();
+            const userId = message.author.id;
+            const rank = await getUserRankPositionByMessageCount(userId);
+            const userData = await getUserRank(userId);
+            const xpLevel = await calculateXPLevel(userData);
+            const progress = Math.floor((xpLevel.currentXP - xpLevel.initialXP) / (xpLevel.nextRankXP - xpLevel.initialXP) * 100);
+            let avatarURL = message.user.avatarURL();
+
+            let avatar = "https://cdn.discordapp.com/embed/avatars/0.png?size=256";
+
+            if (!avatarURL.endsWith(".gif")) {
+                avatar = avatarURL;
+            }
+
+            const card = new RankCardBuilder()
+                .setDisplayName(message.author.nickname)
+                .setUsername(userData.Rank)
+                .setAvatar(avatar)
+                .setCurrentXP(xpLevel.currentXP)
+                .setRequiredXP(xpLevel.nextRankXP)
+                .setProgressCalculator(() => {
+                    return progress;
+                })
+                .setLevel(xpLevel.level)
+                .setRank(rank)
+                .setOverlay(90)
+                .setBackground("https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg")
+                .setStatus(message.author.status)
+                .setGraphemeProvider(BuiltInGraphemeProvider.FluentEmojiFlat);
+
+            const image = await card.build({
+                format: "png",
+            });
+
+            message.channel.send({ files: [{ attachment: image }] });
         }
 
         const updateData = {
@@ -112,44 +146,6 @@ async function logCommand(interaction, route) {
     } catch (err) {
         console.log(err);
     }
-}
-
-async function sendRankCommand(message) {
-    Font.loadDefault();
-    const userId = message.author.id;
-    const rank = await getUserRankPositionByMessageCount(userId);
-    const userData = await getUserRank(userId);
-    const xpLevel = await calculateXPLevel(userData);
-    const progress = Math.floor((xpLevel.currentXP - xpLevel.initialXP) / (xpLevel.nextRankXP - xpLevel.initialXP) * 100);
-    let avatarURL = message.user.avatarURL();
-
-    let avatar = "https://cdn.discordapp.com/embed/avatars/0.png?size=256";
-
-    if (!avatarURL.endsWith(".gif")) {
-        avatar = avatarURL;
-    }
-
-    const card = new RankCardBuilder()
-        .setDisplayName(message.author.nickname)
-        .setUsername(userData.Rank)
-        .setAvatar(avatar)
-        .setCurrentXP(xpLevel.currentXP)
-        .setRequiredXP(xpLevel.nextRankXP)
-        .setProgressCalculator(() => {
-            return progress;
-        })
-        .setLevel(xpLevel.level)
-        .setRank(rank)
-        .setOverlay(90)
-        .setBackground("https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg")
-        .setStatus(message.author.status)
-        .setGraphemeProvider(BuiltInGraphemeProvider.FluentEmojiFlat);
-
-    const image = await card.build({
-        format: "png",
-    });
-
-    message.channel.send({ files: [{ attachment: image }] });
 }
 
 module.exports = { logMessage, logCommand, logForms };
