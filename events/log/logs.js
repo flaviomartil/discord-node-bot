@@ -91,9 +91,11 @@ async function logForms(route, objectLog) {
 async function logCommand(interaction, route) {
     try {
         let id = interaction.user.id;
+
         if (!interaction.command && !interaction.command.name) {
             return;
         }
+        
         let command = interaction.command.name;
         const userRef = database.ref(route + id +  '-' + command);
         const userSnapshot = await userRef.once('value');
