@@ -1,36 +1,37 @@
-const {EmbedBuilder, PermissionsBitField } = require('discord.js');
+const {PermissionsBitField, SlashCommandBuilder} = require("discord.js");
 
 module.exports = {
     run: async ({ interaction }) => {
-        if (!interaction.channel) {
-            interaction.reply({
-                ephemeral: true,
-                content: `Você não pode usar esse comando em mensagem privada.`,
-            });
-            return;
-        }
-    if (!interaction.isChatInputCommand()) return;
-    if (interaction.commandName === 'limparcanal') {
-        const member = interaction.member;
-        if (member.permissions.has("ADMINISTRATOR")) {
+        const number = interaction.options.getNumber('numero');
+        console.log(interaction.message);
+
+        if (interaction.channel) {
+            let memberUsedCommand = interaction.member;
+
+            if (!memberUsedCommand.permissions.has(PermissionsBitField.Flags.KickMembers)) {
+                return interaction.reply('Você não pode usar esse comando.');
+            }
+
             const channel = interaction.channel;
             const messageManager = channel.messages;
-            const messages = await messageManager.channel.messages.fetch({limit: 99});
+            const messages = await messageManager.channel.messages.fetch(
+                {
+                    limit: number,
+                });
+
             channel.bulkDelete(messages, true);
-            interaction.reply({
+            return interaction.reply({
                 ephemeral: true,
-                content: `Canal limpo com sucesso.`,
+                content: `Foram limpas ${number} mensagens.`,
             });
+
         } else {
-            interaction.reply({
-                ephemeral: true,
-                content: `Somente administradores podem usar o comando limparcanal`,
-            });
+            return interaction.reply('Esse comando só pode ser usado no servidor');
         }
-    }
-},
-    data: {
-    name: 'limparcanal',
-        description: 'Comando para limpar canal',
-},
+    },
+
+    data: new SlashCommandBuilder()
+        .setName('limparcanal')
+        .setDescription('limpa o número escolhido de mensagens')
+        .addNumberOption((option) => option.setName('numero').setDescription('número de mensagens a limpar').setRequired(true))
 };
