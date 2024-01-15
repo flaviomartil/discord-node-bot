@@ -5,7 +5,7 @@ module.exports = {
 
         if (!interaction.isChatInputCommand()) return;
 
-        if (interaction.commandName === 'farm') {
+        if (interaction.commandName === 'farmsemanal') {
             // Create the modal
             const embed = new EmbedBuilder()
                 .setTitle('Meta semanal Romanov')

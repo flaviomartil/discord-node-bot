@@ -5,7 +5,12 @@ const { logMessage, logCommand, logForms } = require('./events/log/logs');
 const path = require('path');
 
 const client = new Client({
-  intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages,IntentsBitField.Flags.MessageContent],
+  intents: [
+      IntentsBitField.Flags.Guilds,
+      IntentsBitField.Flags.GuildMessages,
+      IntentsBitField.Flags.MessageContent,
+      IntentsBitField.Flags.GuildMembers
+  ],
 });
 
 new CommandHandler({
