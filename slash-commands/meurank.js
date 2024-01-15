@@ -8,7 +8,14 @@ module.exports = {
         const userData = await getUserRank(userId);
         const xpLevel = await calculateXPLevel(userData);
         const progress = Math.floor((xpLevel.currentXP - xpLevel.initialXP) / (xpLevel.nextRankXP - xpLevel.initialXP) * 100);
-        let avatar = interaction.user.avatarURL();
+        let avatarURL = interaction.user.avatarURL();
+        console.log(avatarURL);
+        let avatar = "https://cdn.discordapp.com/embed/avatars/0.png?size=256";
+
+        if (!avatarURL.endsWith(".gif")) {
+            avatar = avatarURL;
+        }
+
         const card = new RankCardBuilder()
             .setDisplayName(interaction.member.nickname)
             .setUsername(userData.Rank)
