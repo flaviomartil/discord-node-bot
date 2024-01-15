@@ -11,8 +11,8 @@ module.exports = {
             .setTitle('Meta semanal Romanov')
             .setColor(0xFFD700)
             .addFields(
-                { name: '𝗠𝗘𝗧𝗔 𝗦𝗘𝗠𝗔𝗡𝗔𝗟', value: '1.500 AÇOS', inline: false },
-                { name: '✦𝗣𝗔𝗚𝗔𝗠𝗘𝗡𝗧𝗢✦', value: '𝗣𝗔𝗚𝗔𝗠𝗘𝗡𝗧𝗢 𝗦𝗘𝗠𝗔𝗡𝗔𝗟: 5 FIVES OU 500.000 DINHEIRO LIMPO', inline: false }
+                { name: '𝗠𝗘𝗧𝗔 𝗦𝗘𝗠𝗔𝗡𝗔𝗟', value: '1.000 AÇOS', inline: false },
+                { name: '✦𝗣𝗔𝗚𝗔𝗠𝗘𝗡𝗧𝗢✦', value: '𝗣𝗔𝗚𝗔𝗠𝗘𝗡𝗧𝗢 𝗦𝗘𝗠𝗔𝗡𝗔𝗟: 3 FIVES OU 300.000 DINHEIRO LIMPO', inline: false }
             );
         interaction.reply('Listando meta semanal:');
         if (interaction.channel) {

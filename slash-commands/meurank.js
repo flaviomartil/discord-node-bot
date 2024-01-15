@@ -9,7 +9,7 @@ module.exports = {
         const xpLevel = await calculateXPLevel(userData);
         const progress = Math.floor((xpLevel.currentXP - xpLevel.initialXP) / (xpLevel.nextRankXP - xpLevel.initialXP) * 100);
         let avatarURL = interaction.user.avatarURL();
-        console.log(avatarURL);
+
         let avatar = "https://cdn.discordapp.com/embed/avatars/0.png?size=256";
 
         if (!avatarURL.endsWith(".gif")) {
