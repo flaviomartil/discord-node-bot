@@ -1,8 +1,7 @@
 const randomstring = require('randomstring');
 const { database } = require('../../config/firebaseConfig');
-const { calculateXPLevel, getUserRank } = require('../level/xp');
+const { calculateXPLevel, getUserRank,getUserRankPositionByMessageCount } = require('../level/xp');
 const {Font,RankCardBuilder,RankCardUserStatus,BuiltInGraphemeProvider} = require('canvacord');
-const { calculateXPLevel, getUserRank,getUserRankPositionByMessageCount } = require('../events/level/xp');
 async function getRanks() {
     try {
         const ranksRef = database.ref('/ranks');
