@@ -4,10 +4,12 @@ module.exports = {
     run: async ({ interaction }) => {
         const user = interaction.options.getUser('membro');
 
+
         if (interaction.channel) {
             const guild = await interaction.guild.members.fetch();
             const member = guild.find((m) => m.id === user.id);
-        if (!interaction.user.permissions.has(PermissionsBitField.Flags.KickMembers)) {
+            let memberUsedCommand = interaction.member;
+        if (!memberUsedCommand.permissions.has(PermissionsBitField.Flags.KickMembers)) {
             return interaction.reply('Você não pode usar esse comando.');
         }
 
