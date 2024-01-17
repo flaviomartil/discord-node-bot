@@ -1,4 +1,5 @@
 const {EmbedBuilder, PermissionsBitField} = require('discord.js');
+const {database} = require("../config/firebaseConfig");
 
 module.exports = {
     run: async ({ interaction }) => {
