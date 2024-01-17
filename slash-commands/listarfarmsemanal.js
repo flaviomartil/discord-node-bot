@@ -42,6 +42,7 @@ module.exports = {
                         .addFields({ name: 'Membros:', value: formattedFarmMembers.join('\n'), inline: false });
                 }
 
+                interaction.reply('Lista');
                 return interaction.channel.send({ embeds: [embed] });
             } catch (error) {
                 console.error('Erro ao obter informações do banco de dados:', error);
