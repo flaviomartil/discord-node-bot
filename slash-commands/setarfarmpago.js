@@ -4,11 +4,12 @@ const {database} = require("../config/firebaseConfig");
 module.exports = {
     run: async ({ interaction }) => {
         const user = interaction.options.getUser('membro');
+        const number = interaction.options.getNumber('numero');
         const interactionRoute = '/rankMessage/';
         const userRef = database.ref(interactionRoute + user.id);
         const userSnapshot = await userRef.once('value');
         const currentFarm = userSnapshot.exists() ? userSnapshot.val().CurrentFarm || 0 : 0;
-        const newCount = currentFarm + 1;
+        const newCount = currentFarm + number;
         const updateData = {
             User_ID: user.id,
             CurrentFarm: newCount
@@ -42,4 +43,5 @@ module.exports = {
         .setName('setarfarmpago')
         .setDescription('Adiciona o cargo de farm pago para o membro')
         .addUserOption((option) => option.setName('membro').setDescription('Seleciona o membro').setRequired(true))
+        .addNumberOption((option) => option.setName('numero').setDescription('número de farms entregues').setRequired(true))
 };
