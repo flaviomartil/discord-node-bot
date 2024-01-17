@@ -55,18 +55,24 @@ async function getRanks() {
 async function calculateXPLevel(userData) {
     try {
         const allRanks = await getRanks();
-        const rankName = userData.Rank;
-        const nonEmptyArray = allRanks.filter(item => item !== undefined);
-        const rankObject = nonEmptyArray.find(rank => rank && rank.name === rankName);
+        let rankObject;
+        let nonEmptyArray = [];
+
+        if (userData && userData.rank) {
+            const rankName = userData.rank;
+            nonEmptyArray = allRanks.filter(item => item !== undefined);
+            rankObject = nonEmptyArray.find(rank => rank && rank.name === rankName);
+        }
+
         let initialXP;
         let level = 0;
 
         if (rankObject) {
             initialXP = rankObject.xp;
-            level = rankObject.level
+            level = rankObject.level;
         }
 
-        const messageCount = userData.MessageCount;
+        const messageCount = userData && userData.MessageCount ? userData.MessageCount : 0;
         const currentXP = (messageCount + 1) * 10;  // Adjust as needed
         let nextRank = nonEmptyArray.find(rank => rank.xp > currentXP);
 
@@ -82,9 +88,9 @@ async function calculateXPLevel(userData) {
             level: level,
             nextRankXP: nextRank
         };
-    } catch (err) {
-        console.error('Error calculating XP:', err);
-        return null;
+    } catch (error) {
+        console.error("Erro ao processar dados de classificação:", error);
+        // Trate o erro conforme necessário
     }
 }
 
