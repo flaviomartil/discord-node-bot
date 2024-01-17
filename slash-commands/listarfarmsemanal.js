@@ -19,7 +19,7 @@ module.exports = {
                     const userId = m.user.id;
                     const userRef = database.ref(`/rankMessage/${userId}`);
                     const userSnapshot = await userRef.once('value');
-                    const currentFarm = userSnapshot.exists() ? userSnapshot.val().CurrentFarm || 0 : 0;
+                    const currentFarm = userSnapshot.exists() ? userSnapshot.val().CurrentFarm || 1 : 1;
 
                     farmMembers.push({ user: m.user.toString(), farm: currentFarm });
                 });
