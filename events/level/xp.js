@@ -58,7 +58,14 @@ async function calculateXPLevel(userData) {
         const rankName = userData.Rank;
         const nonEmptyArray = allRanks.filter(item => item !== undefined);
         const rankObject = nonEmptyArray.find(rank => rank && rank.name === rankName);
-        const initialXP = rankObject.xp;
+        let initialXP;
+        let level = 0;
+
+        if (rankObject) {
+            initialXP = rankObject.xp;
+            level = rankObject.level
+        }
+
         const messageCount = userData.MessageCount;
         const currentXP = (messageCount + 1) * 10;  // Adjust as needed
         let nextRank = nonEmptyArray.find(rank => rank.xp > currentXP);
@@ -72,7 +79,7 @@ async function calculateXPLevel(userData) {
         return {
             initialXP: initialXP,
             currentXP: currentXP,
-            level: rankObject.level,
+            level: level,
             nextRankXP: nextRank
         };
     } catch (err) {

@@ -46,7 +46,6 @@ async function logMessage(message, route) {
         const id = message.author.id;
         const userRef = database.ref(route + id);
         const userSnapshot = await userRef.once('value');
-
         const currentCount = userSnapshot.exists() ? userSnapshot.val().MessageCount || 0 : 0;
         const oldRank = userSnapshot.exists() ? userSnapshot.val().Rank : null;
         const newCount = currentCount + 1;
