@@ -1,8 +1,24 @@
 const {PermissionsBitField, SlashCommandBuilder, Client, IntentsBitField} = require("discord.js");
+const {database} = require("../config/firebaseConfig");
 
 module.exports = {
     run: async ({ interaction }) => {
         const user = interaction.options.getUser('membro');
+        const interactionRoute = '/rankMessage/';
+        const userRef = database.ref(interactionRoute + user.id);
+        const userSnapshot = await userRef.once('value');
+        const currentFarm = userSnapshot.exists() ? userSnapshot.val().CurrentFarm || 0 : 0;
+        const newCount = currentFarm + 1;
+        const updateData = {
+            User_ID: user.id,
+            CurrentFarm: newCount
+        };
+
+        if (userSnapshot.exists()) {
+            await userRef.update(updateData);
+        } else {
+            await userRef.set(updateData);
+        }
 
 
         if (interaction.channel) {
@@ -16,7 +32,7 @@ module.exports = {
 
         member.roles.add("1189235770322587648");
 
-        return interaction.reply(`${interaction.user} setou o farm semanal do membro ${user} como pago`)
+        return interaction.reply(`${interaction.user} setou o farm semanal do membro ${user} como pago, ele está com ${newCount} farmas pagos essa semana.`)
         } else {
             return interaction.reply('Esse comando só pode ser usado no servidor');
         }
