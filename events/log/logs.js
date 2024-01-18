@@ -91,7 +91,7 @@ async function logCommand(interaction, route) {
     try {
         let id = interaction.user.id;
 
-        if (!interaction.command && !interaction.command.name) {
+        if (!interaction.command) {
             return;
         }
         
